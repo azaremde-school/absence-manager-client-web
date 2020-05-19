@@ -3,11 +3,18 @@ import VueRouter, { RouteConfig } from 'vue-router';
 
 Vue.use(VueRouter);
 
+const Home = (resolve: any) => require(['@/pages/test'], (m) => resolve(m.default));
+
 const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '@/pages/login/login.component.vue'),
+  },
+  {
+    path: '/',
+    name: 'test',
+    component: Home
   },
 ];
 
