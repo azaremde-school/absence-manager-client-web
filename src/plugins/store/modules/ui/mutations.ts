@@ -14,6 +14,9 @@ const mutations: MutationTree<IUIStore> = {
   TOGGLE_SIDEBAR(state) {
     state.sidebar = !state.sidebar;
   },
+  SET_TAB(state, tab) {
+    state.tab = tab;
+  }
 };
 
 export default mutations;

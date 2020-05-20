@@ -2,34 +2,8 @@
   <header-component />
   <sidebar-component />
 
-  <v-content>
-    <v-tabs fixed-tabs background-color="primary darken-1" dark>
-      <v-tabs-slider></v-tabs-slider>
-      <v-tab>
-        Home
-        <v-icon class="ml-2">
-          mdi-home
-        </v-icon>
-      </v-tab>
-      <v-tab>
-        {{ !!$store.getters['logic/selectedStudent'] ? $store.getters['logic/selectedStudent'].name : 'Überblick' }}
-        <v-icon class="ml-2">
-          mdi-account-box
-        </v-icon>
-      </v-tab>
-      <v-tab>
-        Kalendar
-        <v-icon class="ml-2">
-          mdi-calendar
-        </v-icon>
-      </v-tab>
-      <v-tab>
-        Hilfe
-        <v-icon class="ml-2">
-          mdi-help-circle
-        </v-icon>
-      </v-tab>
-
+  <v-content class="fill-height main-tabs">
+    <v-tabs v-model="$store.getters['ui/tab']">
       <v-tab-item>
         <overview-component />
       </v-tab-item>
@@ -44,4 +18,6 @@
       </v-tab-item>
     </v-tabs>
   </v-content>
+
+  <add-class-dialog-component />
 </v-app>

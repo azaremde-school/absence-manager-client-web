@@ -17,6 +17,10 @@ const actions: ActionTree<IUIStore, IRootState> = {
 
   toggleSidebar(context) {
     context.commit('TOGGLE_SIDEBAR');
+  },
+
+  setTab(context, tab) {
+    context.commit('SET_TAB', tab);
   }
 };
 
