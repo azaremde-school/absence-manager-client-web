@@ -1,4 +1,5 @@
 import _Vue from 'vue';
+import store from '../store';
 
 export function subscribe(params: IManualSubscription) {
   const http = new XMLHttpRequest();
@@ -129,6 +130,12 @@ export default {
 
           http.setRequestHeader('Content-Type', 'application/json');
         }
+
+        if (store.getters['account/auth']) {
+          http.setRequestHeader('Token', store.getters['account/token']);
+          http.setRequestHeader('Session', store.getters['account/session']);
+        }
+
         http.withCredentials = true;
         http.send(request);
       }

@@ -104,6 +104,8 @@ export default class CalendarComponent extends Vue {
     instance.dayMenu = false;
     instance.absenceMenu = false;
 
+    instance.selectedDate = calendarEvent.date;
+
     instance.x = (event as any).clientX;
     instance.y = (event as any).clientY;
 

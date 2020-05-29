@@ -8,6 +8,12 @@ import burst from './plugins/burst/index';
 
 Vue.config.productionTip = false;
 
+Vue.use(burst, {
+  store,
+  url: process.env.VUE_APP_SERVER_URL,
+  authAction: 'account/setAuthentication'
+});
+
 new Vue({
   router,
   store,

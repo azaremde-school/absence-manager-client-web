@@ -1,8 +1,10 @@
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import convertReason, { reasonToNumber } from '@/helpers/convert-reason';
+import getRanges from '@/helpers/get-ranges';
 // import getRanges from '@/helpers/get-ranges';
 // import { reasonToNumber } from '@/helpers/convert-reason';
 
-@Component({  
+@Component({
   computed: {
     indeterminate: {
       get() {
@@ -23,7 +25,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
       },
       set(value: boolean) {
         const instance: AbsenceWindowComponent = <AbsenceWindowComponent>this;
-        
+
         instance.lessonsChecked = [];
 
         const parsedLessonsCount: number = parseInt(instance.lessonsCount);
@@ -43,11 +45,11 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 
         const parsedLessonsCount: number = parseInt(instance.lessonsCount);
 
-        const allMatch = instance.reasonsChecked.length === parsedLessonsCount && !instance.reasonsChecked.find(el => instance.reasonsChecked[0] !== el);
+        const allMatch = instance.reasonsChecked.length === parsedLessonsCount && !instance.reasonsChecked.find((el) => instance.reasonsChecked[0] !== el);
 
         return allMatch ? instance.reasonsChecked[0] : null;
       },
-      set(value) {        
+      set(value) {
         const instance: AbsenceWindowComponent = <AbsenceWindowComponent>this;
 
         const parsedLessonsCount: number = parseInt(instance.lessonsCount);
@@ -56,7 +58,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
         for (var i = 0; i < parsedLessonsCount; i++) {
           instance.reasonsChecked.push(value);
         }
-      }
+      },
     },
     allExcused: {
       get() {
@@ -68,7 +70,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
       },
       set(value: boolean) {
         const instance: AbsenceWindowComponent = <AbsenceWindowComponent>this;
-        
+
         instance.excusedChecked = [];
 
         const parsedLessonsCount: number = parseInt(instance.lessonsCount);
@@ -82,7 +84,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
         return true;
       },
     },
-  }
+  },
 })
 export default class AbsenceWindowComponent extends Vue {
   lessonsChecked: number[] = [];
@@ -91,13 +93,7 @@ export default class AbsenceWindowComponent extends Vue {
 
   lessonsCount: string = '6';
 
-  reasons: string[] = [
-    'Krankheit',
-    'Ausflug',
-    'Arztbesuch',
-    'Familiäre Gründe',
-    'Sonstiges'
-  ]
+  reasons: string[] = ['Krankheit', 'Ausflug', 'Arztbesuch', 'Familiäre Gründe', 'Sonstiges'];
 
   @Watch('lessonsChecked')
   onChange(newArr: any, oldArr: any) {
@@ -105,7 +101,7 @@ export default class AbsenceWindowComponent extends Vue {
 
     const change: number = oldArr.find((value: number) => !newArr.includes(value));
 
-    if (change || change === 0) {      
+    if (change || change === 0) {
       instance.reasonsChecked[change] = undefined;
     }
   }
@@ -125,8 +121,8 @@ export default class AbsenceWindowComponent extends Vue {
         pairs.push({
           lesson: i + 1,
           reason: reasons[i],
-          excused: excused.includes(i)
-        })
+          excused: excused.includes(i),
+        });
       }
     }
 
@@ -134,29 +130,35 @@ export default class AbsenceWindowComponent extends Vue {
       const date: string = instance.selectedDate;
       const reason: string = pairs[i].reason || '';
       const excused: boolean = pairs[i].excused;
-      const lessons: number[] = pairs.filter(pair => pair.reason === reason && pair.excused === excused).map(el => el.lesson);
+      const lessons: number[] = pairs.filter((pair) => pair.reason === reason && pair.excused === excused).map((el) => el.lesson);
 
-      // if (!parsed.find(el => el.lessons.reason === reasonToNumber(reason) && el.lessons.excused === excused)) {
-      //   parsed.push({
-      //     date,
-      //     lessons: {
-      //       numbers: lessons,
-      //       reason: reasonToNumber(reason),
-      //       excused
-      //     }
-      //   });
-      // }
+      if (!parsed.find((el) => el.lessons.reason === reasonToNumber(reason) && el.lessons.excused === excused)) {
+        parsed.push({
+          date,
+          lessons: {
+            numbers: lessons,
+            reason: reasonToNumber(reason),
+            excused,
+          },
+        });
+      }
     }
 
+    const selectedClass: string = instance.$store.getters['logic/selectedClass'].name;
     const selectedStudent: string = instance.$store.getters['logic/selectedStudent'].name;
 
     if (selectedStudent) {
       for (var i = 0; i < parsed.length; i++) {
-        instance.$store.dispatch('logic/pushAbsence', { selectedStudent, absence: parsed[i] });
+        instance.$store.dispatch('logic/pushAbsence', { selectedStudent, selectedClass, absence: parsed[i] });
+        instance.$store.dispatch('calendar/pushEvent', {
+          start: parsed[i].date,
+          end: parsed[i].date,
+          name: `${getRanges(parsed[i].lessons.numbers)} Std., ${convertReason(parsed[i].lessons.reason).name} - ${parsed[i].lessons.excused ? 'Attestiert' : 'Unattestiert'}`,
+          color: convertReason(parsed[i].lessons.reason).color,
+        });
       }
     }
 
-    
     instance.$emit('absence-window-close');
   }
 

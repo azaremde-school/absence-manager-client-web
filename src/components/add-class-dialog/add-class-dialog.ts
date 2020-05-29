@@ -1,20 +1,14 @@
 import { Vue, Component } from 'vue-property-decorator';
-// import IStudent from '@/abstract/student';
+import IStudent from '@/abstract/student';
+import ISchoolClass from '@/abstract/school-class';
 
-import { VSubheader } from 'vuetify/lib';
-// import ISchoolClass from '@/abstract/school-class';
-
-@Component({
-  components: {
-    VSubheader,
-  },
-})
+@Component
 export default class AddClassDialogComponent extends Vue {
   dialog: boolean = false;
 
   name: string = '';
   className: string = '';
-  students: any[] = [];
+  students: IStudent[] = [];
 
   addStudent(): void {
     const instance: AddClassDialogComponent = this;
@@ -22,7 +16,8 @@ export default class AddClassDialogComponent extends Vue {
     if (!instance.name) return;
 
     instance.students.unshift({
-      name: instance.name
+      name: instance.name,
+      absences: []
     })
 
     instance.name = '';
@@ -36,6 +31,19 @@ export default class AddClassDialogComponent extends Vue {
 
   save(): void {
     const instance: AddClassDialogComponent = this;
+
+    instance.$request.subscribe({
+      event: 'add-class__request',
+      data: {
+        name: instance.className,
+        students: instance.students
+      }
+    });
+
+    instance.$store.dispatch('logic/pushClass', {
+      name: instance.className,
+      students: instance.students
+    });
 
     instance.dialog = false;
     instance.className = '';

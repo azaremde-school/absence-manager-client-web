@@ -1,16 +1,13 @@
 import { Vue, Component } from 'vue-property-decorator';
-
-
-import { VBtn } from 'vuetify/lib';
-import { VIcon } from 'vuetify/lib';
-
+import IStudent from '@/abstract/student';
+import ICalendarEvent from '@/abstract/calendar-event';
+import IAbsence from '@/abstract/absence';
+import ILessons from '@/abstract/lessons';
+import getRanges from '@/helpers/get-ranges';
+import convertReason from '@/helpers/convert-reason';
 
 
 @Component({
-  components: {
-    VBtn,
-    VIcon
-  },
   computed: {
     classes: {
       get() {
@@ -33,30 +30,45 @@ import { VIcon } from 'vuetify/lib';
 export default class SidebarComponent extends Vue {
   selectedStudent: number = -1;
 
-  // selectStudent(student: IStudent, index: number) {
-  //   const instance: SidebarComponent = this;
+  selectClass(index: number) {
+    const instance: SidebarComponent = this;
+    const selectedClass: string = instance.$store.getters['logic/classes'][index];
+    instance.$store.dispatch('logic/selectClass', selectedClass);
+  }
 
-  //   instance.selectedStudent = index;
+  selectStudent(student: IStudent, index: number) {
+    const instance: SidebarComponent = this;
 
-  //   instance.$store.dispatch('logic/selectStudent', student);
+    instance.selectedStudent = index;
+
+    instance.$store.dispatch('logic/selectStudent', student);
     
-  //   var events: ICalendarEvent[] = [];
+    var events: ICalendarEvent[] = [];
 
-  //   for (var i = 0; i < student.absences.length; i++) {
-  //     const absence: IAbsence = student.absences[i];
+    console.log(student);
 
-  //     for (var j = 0; j < absence.lessons.length; j++) {
-  //       const lessons: ILessons = absence.lessons[j];
+    for (var i = 0; i < student.absences.length; i++) {
+      const absence: IAbsence = student.absences[i];
 
-  //       events.push({
-  //         start: absence.date,
-  //         end: absence.date,
-  //         name: getRanges(lessons.numbers) + ' Std., ' + convertReason(lessons.reason).name,
-  //         color: convertReason(lessons.reason).color
-  //       })
-  //     }
-  //   }
+      events.push({
+        start: absence.date,
+        end: absence.date,
+        name: `${getRanges(absence.lessons.numbers)} Std., ${convertReason(absence.lessons.reason).name} - ${absence.lessons.excused ? 'Attestiert' : 'Unattestiert'}`,
+        color: convertReason(absence.lessons.reason).color
+      })
 
-  //   instance.$store.dispatch('calendar/setEvents', events);
-  // }
+      // for (var j = 0; j < absence.lessons.length; j++) {
+      //   const lessons: ILessons = absence.lessons[j];
+
+      //   events.push({
+      //     start: absence.date,
+      //     end: absence.date,
+      //     name: getRanges(lessons.numbers) + ' Std., ' + convertReason(lessons.reason).name,
+      //     color: convertReason(lessons.reason).color
+      //   });
+      // }
+    }
+
+    instance.$store.dispatch('calendar/setEvents', events);
+  }
 }

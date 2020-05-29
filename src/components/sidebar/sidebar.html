@@ -1,6 +1,6 @@
 <div id="sidebar">
   <v-navigation-drawer v-model="sidebar" :clipped="$vuetify.breakpoint.lgAndUp" app>
-    <v-list dense class="pt-9">
+    <v-list dense>
       <v-list-group :ripple="false" v-for="(schoolClass, i) in classes" :key="i">
         <template v-slot:activator>
           <v-tooltip top>
@@ -13,7 +13,8 @@
             </template>
             <span>Klasse verwalten</span>
           </v-tooltip>
-          <v-list-item-content @click="selectedStudent = -1">
+          <v-list-item-content @click="selectClass(i)">
+          <!-- <v-list-item-content @click="selectedStudent = -1"> -->
             <v-list-item-title>
               {{ schoolClass.name }}
             </v-list-item-title>

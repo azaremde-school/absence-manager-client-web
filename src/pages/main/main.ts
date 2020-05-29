@@ -1,9 +1,9 @@
 import { Vue, Component } from 'vue-property-decorator';
 import HeaderComponent from '@/components/header/header.component.vue';
-import SidebarComponent from '@/components/sidebar/sidebar.component.vue';
-import CalendarComponent from '@/components/calendar/calendar.component.vue';
-import OverviewComponent from '@/components/overview/overview.component.vue';
 import AddClassDialogComponent from '@/components/add-class-dialog/add-class-dialog.component.vue';
+import ActivitiesComponent from '@/components/activities/activities.component.vue';
+import SidebarComponent from '@/components/sidebar/sidebar.component.vue';
+import ISchoolClass from '@/abstract/school-class';
 
 
 @Component({
@@ -18,13 +18,25 @@ import AddClassDialogComponent from '@/components/add-class-dialog/add-class-dia
     }
   },
   components: {
-    HeaderComponent,
     SidebarComponent,
-    CalendarComponent,
-    OverviewComponent,
-    AddClassDialogComponent
+    HeaderComponent,
+    AddClassDialogComponent,
+    ActivitiesComponent
+  },
+  events: {
+    ['get-classes__response']: function(classes: ISchoolClass[]) {
+      const instance: MainComponent = this as MainComponent;
+
+      instance.$store.dispatch('logic/setClasses', classes);
+    }
   }
 })
-export default class ComponentTemplate extends Vue {
-  
+export default class MainComponent extends Vue {
+  mounted() {
+    const instance: MainComponent = this;
+
+    instance.$request.subscribe({
+      event: 'get-classes__request'
+    })
+  }
 }
