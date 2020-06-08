@@ -6,6 +6,7 @@ import ui from './modules/ui';
 import calendar from './modules/calendar';
 import data from './modules/data';
 import account from './modules/account';
+import groups from './modules/groups';
 
 Vue.use(Vuex);
 
@@ -18,6 +19,7 @@ export default new Vuex.Store({
     ui,
     calendar,
     data,
-    account
+    account,
+    groups
   },
 });

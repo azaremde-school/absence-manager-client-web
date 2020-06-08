@@ -10,31 +10,52 @@
       <v-app-bar-nav-icon @click="$store.dispatch('ui/showSidebar', !$store.getters['ui/sidebar'])"></v-app-bar-nav-icon>
       <v-sheet color="transparent">
         <v-toolbar-title class="ml-0 px-4">
-          <span class="hidden-sm-and-down">Abwesenheitsmanager</span>
+          <span class="hidden-sm-and-down"> {{ $vuetify.lang.t('$vuetify.name') }} </span>
+          <!-- <span class="hidden-sm-and-down">Abwesenheitsmanager</span> -->
         </v-toolbar-title>
       </v-sheet>
 
       <v-tabs hide-slider class="fill-height" v-model="tab" dark>
         <v-tabs-slider></v-tabs-slider>
         <v-tab>
-          Home
+          {{ $vuetify.lang.t('$vuetify.tabs[0]') }}
           <v-icon class="ml-2">mdi-home</v-icon>
         </v-tab>
         <v-tab>
-          Überblick
+          {{ $vuetify.lang.t('$vuetify.tabs[1]') }}
           <v-icon class="ml-2">mdi-account-box</v-icon>
         </v-tab>
         <v-tab>
-          Kalendar
+          {{ $vuetify.lang.t('$vuetify.tabs[2]') }}
           <v-icon class="ml-2">mdi-calendar</v-icon>
         </v-tab>
         <v-tab>
-          Hilfe
+          {{ $vuetify.lang.t('$vuetify.tabs[3]') }}
           <v-icon class="ml-2">mdi-help-circle</v-icon>
         </v-tab>
       </v-tabs>
 
       <v-spacer></v-spacer>
+
+
+      <v-menu offset-y>
+        <template v-slot:activator="{ on }">
+
+        <v-btn v-on="on" icon>
+          <v-icon>translate</v-icon>
+        </v-btn> 
+
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in languages"
+            :key="index"
+            @click="$vuetify.lang.current = item.value"
+          >
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>     
       <v-btn icon>
         <v-icon>mdi-fullscreen</v-icon>
       </v-btn>
@@ -61,7 +82,21 @@ export default {
       set(value) {
         this.$store.dispatch('ui/setTab', value);
       }
-    }
+    },
+    languages: () => [
+      {
+        name: 'Deutsch',
+        value: 'de'
+      },
+      {
+        name: 'English',
+        value: 'en'
+      },
+      {
+        name: 'Русский',
+        value: 'ru'
+      },
+    ]
   },
 };
 </script>

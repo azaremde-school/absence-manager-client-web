@@ -6,6 +6,9 @@ import axios from 'axios';
 
 Vue.use(VueRouter);
 
+/**
+ * Lazy loading only.
+ */
 const routes = [
   {
     path: '/',
@@ -30,11 +33,14 @@ const router = new VueRouter({
   routes
 });
 
+/**
+ * Checking authentication before entering each route.
+ */
 router.beforeEach((to, from, next) => {
   const stopChecking = store.getters['account/stopChecking'];
 
   /**
-   * If we don't want to check the authorization,
+   * If we don't want to check the authentication,
    * we just let client go.
    */
   if (stopChecking) {

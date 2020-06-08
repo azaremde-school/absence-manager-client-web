@@ -34,19 +34,13 @@
 </template>
 
 <script>
+import { email, password } from '@/static/rules';
+
 export default {
   computed: {
     rules: () => ({
-      email: [
-        v => !!v || "E-mail ist erforderlich",
-        v => /.+@.+\..+/.test(v) || "E-mail muss gültig sein"
-      ],
-      password: [
-        v => !!v || "Passwort ist erforderlich",
-        v => (v || "").length >= 4 || "Das Passwort ist zu kurz",
-        v => (v || "").length <= 16 || "Das Passwort ist zu lang",
-        v => (v || "").indexOf(" ") < 0 || "Leerzeichen sind nicht erlaubt"
-      ]
+      email,
+      password
     })
   },
   data: () => ({
@@ -57,8 +51,8 @@ export default {
       showPassword: false
     },
     form: {
-      email: "eugen@mail.com",
-      password: "eugen",
+      email: "",
+      password: "",
       valid: false
     }
   }),

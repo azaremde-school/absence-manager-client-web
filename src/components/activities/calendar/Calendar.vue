@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title class="primary">
             <v-row class="justify-start align-center">
-              <v-btn fab small text dark @click="$refs.calendar.prev()">
+              <v-btn fab small text dark @click="$refs.calendar.prev()" class="mr-2">
                 <v-icon dark>mdi-chevron-left</v-icon>
               </v-btn>
               <v-menu
@@ -19,14 +19,28 @@
                 <template v-slot:activator="{ on }">
                   <v-btn text dark width="150" v-on="on">{{ getDate() }}</v-btn>
                 </template>
-                <v-date-picker v-model="date" type="month" locale="de-DE" no-title scrollable>
+                <v-date-picker
+                  :locale="$vuetify.lang.current"
+                  v-model="date"
+                  type="month"
+                  no-title
+                  scrollable
+                >
                   <v-spacer></v-spacer>
-                  <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-                  <v-btn text color="primary" @click="save(date)">OK</v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="menu = false"
+                  >{{ $vuetify.lang.t(`$vuetify.cancel`) }}</v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="save(date)"
+                  >{{ $vuetify.lang.t(`$vuetify.ok`) }}</v-btn>
                 </v-date-picker>
               </v-menu>
 
-              <v-btn fab small text dark @click="$refs.calendar.next()">
+              <v-btn fab small text dark @click="$refs.calendar.next()" class="ml-2">
                 <v-icon dark>mdi-chevron-right</v-icon>
               </v-btn>
 
@@ -46,10 +60,14 @@
             <v-calendar
               v-model="value"
               :type="type"
-              :noe="today"
+              :now="today"
+              :locale="$vuetify.lang.current"
+              :events="getEvents"
+              :event-color="getEventColor"
+              :event-more-text="'{0} ' + $vuetify.lang.t('$vuetify.more')"
               ref="calendar"
               color="primary"
-              locale="de-DE"
+              @click:date="viewDay"
               weekdays="1, 2, 3, 4, 5, 6, 0"
             ></v-calendar>
           </v-sheet>
@@ -79,29 +97,34 @@
             </v-card-actions>
           </v-card>-->
         </v-menu>
-        <!-- <v-menu v-model="dayMenu" :position-x="x" :position-y="y" absolute offset-y>
+
+        <v-menu v-model="dayMenu" :position-x="x" :position-y="y" absolute offset-y>
           <v-list>
             <v-list-item @click="openAbsenceMenu()">
-              <v-list-item-title>Abwesenheit melden</v-list-item-title>
+              <v-list-item-title>Abwesenheit eintragen</v-list-item-title>
             </v-list-item>
             <v-list-item @click="{}">
               <v-list-item-title>Tagesüberblick</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-menu>-->
-        <!-- v-model="absenceMenu"
-        :close-on-content-click="false"
-        :position-x="x"
-        :position-y="y"-->
-        <v-menu absolute>
-          <!-- <absence-window-component
+        </v-menu>
+
+        <v-menu
+          :close-on-content-click="false"
+          v-model="absenceMenu"
+          :position-x="x"
+          :position-y="y"
+          absolute
+        >
+          <AbsenceWindow
             v-bind="{
-            x,
-            y,
-            selectedDate
-          }"
+              x,
+              y,
+              selectedDate,
+              absenceMenu
+            }"
             v-on:absence-window-close="absenceWindowClose()"
-          />-->
+          />
         </v-menu>
       </v-col>
     </v-row>
@@ -109,8 +132,14 @@
 </template>
 
 <script>
-import ignoreMessage from '@/util/ignore-message';
-import Vue from 'vue';
+import AbsenceWindow from './AbsenceWindow';
+
+import getRanges from "@/util/get-ranges";
+import { colors } from "@/util/colors";
+import { reasons } from "@/util/reasons";
+
+import ignoreMessage from "@/util/ignore-message";
+import Vue from "vue";
 
 Vue.config.warnHandler = ignoreMessage;
 
@@ -130,6 +159,10 @@ const months = [
 ];
 
 export default {
+  components: {
+    AbsenceWindow
+  },
+
   data: () => ({
     type: "month",
     today: null,
@@ -152,16 +185,99 @@ export default {
     this.value = new Date().toISOString();
   },
 
+  computed: {
+    getEvents() {
+      var result = [];
+
+      const member = this.$store.getters["groups/selectedMember"];
+
+      if (!member) return result;
+
+      const absences = member.absences;
+
+      if (!absences || !absences.length) return result;
+
+      absences.forEach(absence => {
+        absence.items.forEach(item => {
+          const excused = item.lessons
+            .filter(_item => _item.excused)
+            .map(_item => _item.n);
+          const unexcused = item.lessons
+            .filter(_item => !_item.excused)
+            .map(_item => _item.n);
+
+          const reason = item.reason;
+          const reasonProperty = reasons[reason];
+          const translatedReason = this.$vuetify.lang.t(
+            `$vuetify.absences.${reasonProperty}`
+          );
+
+          getRanges(excused).forEach(range => {
+            result.push({
+              start: absence.date,
+              end: absence.date,
+              name: `${range}, ${translatedReason}, ${this.$vuetify.lang.t(
+                "$vuetify.excused"
+              )}`,
+              color: colors[item.reason],
+              sort: range.split('-')[0]
+            });
+          });
+
+          getRanges(unexcused).forEach(range => {
+            result.push({
+              start: absence.date,
+              end: absence.date,
+              name: `${range}, ${translatedReason}, ${this.$vuetify.lang.t(
+                "$vuetify.unexcused"
+              )}`,
+              color: colors[item.reason],
+              sort: range.split('-')[0]
+            });
+          });
+
+          result.sort((a, b) => {
+            return a.sort - b.sort;
+          });
+        });
+      });
+
+      return result;
+    }
+  },
+
   methods: {
+    openAbsenceMenu() {
+      const instance = this;
+
+      instance.dayMenu = false;
+
+      setTimeout(() => {
+        instance.absenceMenu = true;
+      }, 10);
+    },
+
+    getEventColor(event) {
+      return event.color;
+    },
+
+    viewDay(calendarEvent) {
+      this.x = event.clientX;
+      this.y = event.clientY;
+
+      this.selectedDate = calendarEvent.date;
+
+      this.dayMenu = true;
+    },
+
     getDate() {
       if (this.value) {
         const date = new Date(this.value);
+        const month = this.$vuetify.lang.t(
+          `$vuetify.months[${date.getMonth()}]`
+        );
 
-        return `${
-          months[date.getMonth()]
-        }, ${
-          date.getUTCFullYear().toString()
-        }`;
+        return `${month}, ${date.getUTCFullYear().toString()}`;
       } else {
         return "";
       }
@@ -170,5 +286,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="sass">
+.v-event
+  width: 95% !important
+  margin: auto !important
+  margin-top: 4px !important
 </style>
