@@ -7,6 +7,7 @@ import calendar from './modules/calendar';
 import data from './modules/data';
 import account from './modules/account';
 import groups from './modules/groups';
+import training from './modules/training';
 
 Vue.use(Vuex);
 
@@ -20,6 +21,7 @@ export default new Vuex.Store({
     calendar,
     data,
     account,
-    groups
+    groups,
+    training
   },
 });

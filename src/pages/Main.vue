@@ -16,26 +16,32 @@ import Activities from "@/components/activities/Activities.vue";
 export default {
   name: "Main",
 
-  mounted() {
-    const url = this.$store.getters["http/url"];
-    const token = this.$store.getters["account/token"];
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      const url = vm.$store.getters["http/url"];
+      const token = localStorage.getItem('token');
 
-    axios
-      .get(
-        `${url}/logic/get_groups`,
-        {
-          headers: {
-            token
+      axios
+        .get(
+          `${url}/logic/get_groups`,
+          {
+            headers: {
+              token
+            }
           }
-        }
-      )
-      .then(response => {
-        const groups = response.data;
+        )
+        .then(response => {
+          const groups = response.data;
 
-        for (var i = 0; i < groups.length; i++) {
-          this.$store.dispatch('groups/addGroup', groups[i]);
-        }
-      });
+          if (groups.length) {
+            vm.$store.dispatch('groups/reset');
+    
+            for (var i = 0; i < groups.length; i++) {
+              vm.$store.dispatch('groups/addGroup', groups[i]);
+            }
+          }
+        });
+    })
   },
 
   components: {

@@ -43,7 +43,7 @@ export default {
           member.absences.push(absence);
 
           const url = this.getters['http/url'];
-          const token = this.getters['account/token'];
+          const token = localStorage.getItem('token');
     
           axios.post(`${url}/logic/add_absence`, {
             groupId: group._id,
@@ -83,6 +83,12 @@ export default {
          * The group not found.
          */
       }
+    },
+
+    RESET(state) {
+      state.groups = [];
+      state.selectedGroup = -1;
+      state.selectedMember = -1;
     }
   },
 
@@ -105,6 +111,10 @@ export default {
 
     selectMember(context, _id) {
       context.commit('SELECT_MEMBER', _id);
+    },
+
+    reset(context) {
+      context.commit('RESET');
     }
   },
 

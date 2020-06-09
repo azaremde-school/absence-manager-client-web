@@ -120,7 +120,7 @@ export default {
       this.$store.dispatch('groups/addGroup', group);
 
       const url = this.$store.getters['http/url'];
-      const token = this.$store.getters['account/token'];
+      const token = localStorage.getItem('token');
 
       axios.post(`${url}/logic/add_group`, {
         group

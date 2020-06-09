@@ -6,13 +6,10 @@
           <Overview />
         </v-tab-item>
         <v-tab-item>
-          bar
-        </v-tab-item>
-        <v-tab-item>
           <Calendar />
         </v-tab-item>
         <v-tab-item>
-          bar
+          <Help />
         </v-tab-item>
       </v-tabs>
     </v-content>
@@ -22,6 +19,7 @@
 <script>
 import Overview from "@/components/activities/overview/Overview.vue";
 import Calendar from "@/components/activities/calendar/Calendar.vue";
+import Help from "@/components/activities/help/Help.vue";
 
 export default {
   computed: {
@@ -33,7 +31,8 @@ export default {
   },
   components: {
     Overview,
-    Calendar
+    Calendar,
+    Help
   }
 };
 </script>

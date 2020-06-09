@@ -51,7 +51,8 @@ router.beforeEach((to, from, next) => {
   const authNeeded = to.name === 'Main';
 
   const url = store.getters['http/url'];
-  const token = store.getters['account/token'];
+  
+  const token = localStorage.getItem('token');
   
   axios.get(`${url}/account/check_auth`, {
     params: {

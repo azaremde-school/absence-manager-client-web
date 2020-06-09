@@ -105,6 +105,38 @@ import { normalizeArray } from "@/util/objects";
 import extractTranslationList from "@/util/extract-translation-list";
 import absenceWindowToAbsence from "@/util/absence-window-to-absence";
 
+function convertReasons1(_reasons, $vuetify) {
+  var result = [];
+
+  const reasonsList = extractTranslationList(
+    $vuetify,
+    "$vuetify.absences",
+    reasons
+  );
+
+  for (var i = 0; i < _reasons.length; i++) {
+    result.push(reasonsList.indexOf(_reasons[i]));
+  }
+
+  return result;
+}
+
+function convertReasons2(_reasons, $vuetify) {
+  var result = [];
+
+  const reasonsList = extractTranslationList(
+    $vuetify,
+    "$vuetify.absences",
+    reasons
+  );
+
+  for (var i = 0; i < _reasons.length; i++) {
+    result.push(reasonsList[_reasons[i]]);
+  }
+
+  return result;
+}
+
 export default {
   props: {
     selectedDate: null,
@@ -219,9 +251,11 @@ export default {
         return;
       };
 
+      const convertedReasons = convertReasons2(helpers.reasonsChecked, this.$vuetify);
+
       this.lessonsChecked = helpers.lessonsChecked;
       this.excusedChecked = helpers.excusedChecked;
-      this.reasonsChecked = helpers.reasonsChecked;
+      this.reasonsChecked = convertedReasons;
       this.lessonsCount = helpers.lessonsCount;
     },
 
@@ -236,6 +270,8 @@ export default {
 
       const groupId = this.$store.getters["groups/selectedGroup"]._id;
       const memberId = this.$store.getters["groups/selectedMember"]._id;
+      
+      const convertedReasons = convertReasons1(this.reasonsChecked, this.$vuetify);
 
       this.$store.dispatch("groups/addAbsence", {
         groupPrediction: group => group._id === groupId,
@@ -244,12 +280,14 @@ export default {
           ...absence,
           helpers: {
             lessonsChecked: this.lessonsChecked,
-            reasonsChecked: this.reasonsChecked,
+            reasonsChecked: convertedReasons,
             excusedChecked: this.excusedChecked,
             lessonsCount: this.lessonsCount
           }
         }
       });
+
+      this.$emit('absence-window-close');
     }
   }
 };

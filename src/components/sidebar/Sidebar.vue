@@ -1,6 +1,10 @@
 <template>
   <div id="sidebar">
-    <v-navigation-drawer v-model="sidebar" :clipped="$vuetify.breakpoint.lgAndUp" app>
+    <v-navigation-drawer
+      :clipped="$vuetify.breakpoint.lgAndUp"
+      v-model="sidebar"
+      app
+    >
       <v-list dense>
         <v-list-group :ripple="false" v-for="(group, i) in $store.getters['groups/groups']" :key="i" @click="selectGroup(group._id)">
           <template v-slot:activator>

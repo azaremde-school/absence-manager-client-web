@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { email, password } from '@/static/rules';
+import { email, password } from "@/static/rules";
 
 export default {
   computed: {
@@ -58,7 +58,7 @@ export default {
   }),
 
   methods: {
-    submit() {
+    async submit() {
       if (!this.form.valid) {
         return;
       }
@@ -67,23 +67,33 @@ export default {
 
       this.ui.loading = true;
 
-      this.axios
-        .post(`${baseUrl}/account/login`, {
-          ...this.form
+      const { data } = await this.axios.post(`${baseUrl}/account/login`, {
+        ...this.form
+      });
+
+      if (data.result === "SUCCESS") {
+        const { token } = data;
+        localStorage.setItem('token', token);        
+
+        /**
+         * We prevent the router from checking
+         * whether the client is authorized.
+         */
+        this.$store.dispatch('account/setStopChecking', true);
+
+        this.$router.push({
+          name: 'Main'
         })
-        .then(async result => {
-          const success = result.data.result === "SUCCESS";
 
-          if (success) {
-            const { token } = result.data;
+        /**
+         * And again let it check the authorization.
+         */
+        this.$store.dispatch('account/setStopChecking', false);
+      } else {
+        this.ui.snackbar = true;
+      }
 
-            this.$store.dispatch("account/setToken", token);
-          } else {
-            this.ui.snackbar = true;
-          }
-
-          this.ui.loading = false;
-        });
+      this.loading = false;
     },
 
     signup() {

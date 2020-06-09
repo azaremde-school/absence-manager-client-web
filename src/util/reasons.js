@@ -1,4 +1,5 @@
-const reasons = [  
+const reasons = [
+  'unknown',
   'illness',
   'doctor',
   'conference',

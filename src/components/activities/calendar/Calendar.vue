@@ -257,6 +257,10 @@ export default {
       }, 10);
     },
 
+    absenceWindowClose() {
+      this.absenceMenu = false;
+    },
+
     getEventColor(event) {
       return event.color;
     },

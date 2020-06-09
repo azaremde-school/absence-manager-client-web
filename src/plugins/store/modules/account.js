@@ -1,5 +1,7 @@
 import router from "../../router";
 
+import axios from 'axios';
+
 export default {
   namespaced: true,
 
@@ -8,8 +10,8 @@ export default {
   }),
 
   mutations: {
-    SET_TOKEN(state, value) {
-      localStorage.setItem('token', value);
+    SET_TOKEN(state, token) {
+      localStorage.setItem('token', token);
 
       /**
        * We prevent the router from checking

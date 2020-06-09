@@ -14,11 +14,20 @@ function absenceWindowToAbsence(lessonsChecked, reasonsChecked, excusedChecked, 
   );
 
   for (var i = 0; i < reasonsChecked.length; i++) {
-    reasonsChecked[i] = reasonsList.indexOf(reasonsChecked[i]);
+    const convertedReason = reasonsList.indexOf(reasonsChecked[i]);
+    reasonsChecked[i] = convertedReason === -1 ? 0 : convertedReason;
   }
 
   const pairs = [];
   const parsed = [];
+
+  if (lessonsChecked.length) {
+    const maxLength = lessonsChecked.reduce((a, b) => Math.max(a, b)) + 1;
+  
+    for (var i = reasonsChecked.length - maxLength; i < maxLength; i++) {
+      reasonsChecked.push(0);
+    }
+  }
 
   for (var i = 0; i < reasonsChecked.length; i++) {
     if (lessonsChecked.includes(i)) {
@@ -82,6 +91,8 @@ function absenceWindowToAbsence(lessonsChecked, reasonsChecked, excusedChecked, 
       }
     }
   });
+
+  absence.date = selectedDate;
 
   return absence;
 }

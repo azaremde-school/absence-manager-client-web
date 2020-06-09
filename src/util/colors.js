@@ -4,7 +4,8 @@ const colors = [
   'light-green',
   'blue',
   'indigo',
-  'pink',
+  'orange',
+  'grey darken-2',
 ];
 
 export { colors };

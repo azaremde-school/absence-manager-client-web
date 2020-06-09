@@ -1,6 +1,6 @@
 export default {
   name: 'Abwesenheitsmanager',
-  tabs: ['Home', 'Überblick', 'Kalendar', 'Hilfe'],
+  tabs: ['Überblick', 'Kalendar', 'Hilfe'],
 
   months: [
     'Januar',
@@ -34,6 +34,7 @@ export default {
   },
 
   absences: {
+    unknown: 'Unbekannt',
     illness: 'Krankheit',
     doctor: 'Arztbesuch',
     conference: 'Konferenz',
