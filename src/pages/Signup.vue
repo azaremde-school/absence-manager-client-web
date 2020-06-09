@@ -78,7 +78,7 @@ export default {
       return {
         email: [
           v => !!v || "E-mail ist erforderlich",
-          v => /.+@.+\..+/.test(v) || "E-mail muss gültig sein"
+          v => v === 'admin' || /.+@.+\..+/.test(v) || 'E-mail muss gültig sein',
         ],
         name: [v => !!v || "Name ist erforderlich"],
         password: [
