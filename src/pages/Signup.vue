@@ -3,7 +3,7 @@
     <v-card width="450" height="auto" class="mx-auto flex-grow-0">
       <v-card-title>Anmelden</v-card-title>
       <v-card-text>
-        <v-form v-model="form.valid">
+        <v-form autocomplete="off" v-model="form.valid">
           <div class="d-flex">
             <v-text-field
               class="mr-2"
