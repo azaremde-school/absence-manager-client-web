@@ -1,5 +1,5 @@
 <template>
-  <div id="header">
+  <div class="header">
     <v-app-bar
       class="header px-1"
       :clipped-left="$vuetify.breakpoint.lgAndUp"
@@ -78,18 +78,30 @@
       <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
         <v-icon>mdi-invert-colors</v-icon>
       </v-btn>
-      <v-btn icon>
+      <v-btn icon @click="settingsDialog = true">
         <v-icon>settings</v-icon>
       </v-btn>
       <v-btn @click="$store.dispatch('account/logOut')" icon>
         <v-icon>logout</v-icon>
       </v-btn>
     </v-app-bar>
+    <Settings
+      v-bind="{
+        settingsDialog
+      }"
+      v-on:changeDialogValue="settingsDialog = false"
+    />
   </div>
 </template>
 
 <script>
 export default {
+  components: {
+    Settings: () => import("@/components/Settings.vue")
+  },
+  data: () => ({
+    settingsDialog: false
+  }),
   computed: {
     tab: {
       get() {
@@ -118,21 +130,11 @@ export default {
 </script>
 
 <style lang="sass">
-.highlighted  
-  box-shadow: 0 0 0 5000px rgba(0, 0, 0, .7) !important
-  z-index: 9999 !important
-  pointer-events: auto !important
-  transition: all 0.5s ease !important
-
-.v-tabs
-  .v-slide-group__wrapper
-    contain: none
-    overflow: visible
-
-.v-tabs-slider
-  background-color: white !important
-.v-tab--active
-  color: white !important
-  *
+.header
+  .v-tabs-slider
+    background-color: white !important
+  .v-tab--active
     color: white !important
+    *
+      color: white !important
 </style>

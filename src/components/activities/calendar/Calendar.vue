@@ -266,6 +266,10 @@ export default {
     },
 
     viewDay(calendarEvent) {
+      if (this.$store.getters['groups/noMemberSelected']) {
+        return;
+      }
+
       this.x = event.clientX;
       this.y = event.clientY;
 
