@@ -92,8 +92,7 @@ export default {
       } else {
         this.ui.snackbar = true;
       }
-
-      this.loading = false;
+      this.ui.loading = false;
     },
 
     signup() {

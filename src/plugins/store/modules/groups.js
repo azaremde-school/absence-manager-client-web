@@ -1,4 +1,5 @@
 import axios from 'axios';
+import generateId from '@/util/generate-id';
 
 export default {
   namespaced: true,
@@ -75,6 +76,11 @@ export default {
     },
 
     SELECT_MEMBER(state, _id) {
+      if (_id === -1) {
+        state.selectedMember = -1;
+        return;
+      }
+
       if (state.selectedGroup) {
         state.selectedMember = state.selectedGroup.members.find(member => member._id === _id);
       } else {
@@ -89,6 +95,58 @@ export default {
       state.groups = [];
       state.selectedGroup = -1;
       state.selectedMember = -1;
+    },
+
+    EDIT_GROUP(state, changes) {
+      const groupId = changes.group;
+
+      const group = state.groups.find(g => g._id === groupId);
+
+      const membersToRemove = changes.oldMembers.filter(m => m.removed);
+
+      var removedIds = [];
+      var newMembers = [];
+
+      for (var i = 0; i < membersToRemove.length; i++) {
+        const index = group.members.findIndex(m => m._id === membersToRemove[i]._id);
+
+        if (index !== -1) {
+          group.members.splice(index, 1);
+          removedIds.push(membersToRemove[i]._id);
+          i = 0;
+        }
+      }
+
+      const membersToAdd = changes.newMembers;
+
+      for (var i = 0; i < membersToAdd.length; i++) {
+        const _id = generateId({ length: 22 });
+
+        newMembers.push({
+          name: membersToAdd[i].name,
+          _id
+        });
+        group.members.push({
+          _id,
+          name: membersToAdd[i].name,
+          absences: []
+        });
+      }
+
+      const url = this.getters['http/url'];
+      const token = localStorage.getItem('token');
+
+      axios.post(`${url}/logic/edit_group`, {
+        groupId,
+        removedIds,
+        newMembers
+      }, {
+        headers: {
+          token
+        }
+      }).then(response => {
+        
+      });
     }
   },
 
@@ -115,6 +173,10 @@ export default {
 
     reset(context) {
       context.commit('RESET');
+    },
+
+    editGroup(context, changes) {
+      context.commit('EDIT_GROUP', changes);
     }
   },
 
@@ -122,5 +184,8 @@ export default {
     groups: (state) => state.groups,
     selectedGroup: (state) => state.selectedGroup,
     selectedMember: (state) => state.selectedMember,
+    noGroups: (state) => state.groups.length === 0,
+    noGroupSelected: (state) => state.selectedGroup === -1 || !state.selectedGroup,
+    noMemberSelected: (state) => state.selectedMember === -1 || !state.selectedMember
   },
 };

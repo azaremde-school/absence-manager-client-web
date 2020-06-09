@@ -1,25 +1,32 @@
 <template>
   <div>
-    <v-btn bottom color="primary" fab fixed left @click="dialog = !dialog">
-      <v-icon>mdi-plus</v-icon>
-    </v-btn>
+    <v-tooltip right>
+      <template v-slot:activator="{ on }">
+        <v-btn v-on="on" bottom color="primary" fab fixed left @click="dialog = !dialog">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </template>
+      <span>Gruppe erstellen</span>
+    </v-tooltip>
+
     <v-dialog v-model="dialog" width="500px">
       <v-card>
-        <v-card-title class="primary darken-1 white--text">
-          {{ $vuetify.lang.t('$vuetify.addGroupDialog.title') }}
-        </v-card-title>
+        <v-card-title
+          class="primary darken-1 white--text"
+        >{{ $vuetify.lang.t('$vuetify.addGroupDialog.title') }}</v-card-title>
         <v-container>
           <v-row class="mx-2">
             <v-col cols="12" class="py-0">
               <v-text-field
                 type="tel"
                 v-model="group"
+                autocomplete="off"
                 prepend-icon="folder"
                 :placeholder="$vuetify.lang.t('$vuetify.addGroupDialog.name')"
               ></v-text-field>
             </v-col>
             <v-col cols="12" class="py-0">
-              <form v-on:submit.prevent="addMember()">
+              <form autocomplete="off" v-on:submit.prevent="addMember()">
                 <v-text-field
                   hide-details
                   v-model="name"
@@ -29,12 +36,12 @@
                   :placeholder="$vuetify.lang.t('$vuetify.addGroupDialog.newMember')"
                 ></v-text-field>
               </form>
-              <v-card-title class="mb-n3 pb-0">
-                {{ $vuetify.lang.t('$vuetify.addGroupDialog.addedMembers') }}
-              </v-card-title>
-              <v-subheader v-if="members.length === 0">                
-                {{ $vuetify.lang.t('$vuetify.addGroupDialog.empty') }}
-              </v-subheader>
+              <v-card-title
+                class="mb-n3 pb-0"
+              >{{ $vuetify.lang.t('$vuetify.addGroupDialog.addedMembers') }}</v-card-title>
+              <v-subheader
+                v-if="members.length === 0"
+              >{{ $vuetify.lang.t('$vuetify.addGroupDialog.empty') }}</v-subheader>
               <v-list v-else class="my-scroll mt-2" max-height="300" style="overflow-y: auto;">
                 <v-list-item
                   v-for="(student, i) in members"
@@ -61,17 +68,11 @@
           type="info"
           elevation="2"
           class="mx-8"
-        >        
-          {{ $vuetify.lang.t('$vuetify.addGroupDialog.info') }}
-        </v-alert>
+        >{{ $vuetify.lang.t('$vuetify.addGroupDialog.info') }}</v-alert>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="save()" color="primary">
-            {{ $vuetify.lang.t('$vuetify.save') }}
-          </v-btn>
-          <v-btn text @click="dialog = false">
-            {{ $vuetify.lang.t('$vuetify.cancel') }}
-          </v-btn>
+          <v-btn text @click="save()" color="primary">{{ $vuetify.lang.t('$vuetify.save') }}</v-btn>
+          <v-btn text @click="dialog = false">{{ $vuetify.lang.t('$vuetify.cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -79,7 +80,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
+import generateId from "@/util/generate-id";
 
 export default {
   data: () => ({
@@ -94,7 +96,7 @@ export default {
       if (!this.name) return;
 
       this.members.unshift({
-        _id: this.members.length,
+        _id: generateId({ length: 22 }),
         name: this.name,
         absences: []
       });
@@ -111,30 +113,38 @@ export default {
     },
 
     save() {
+      if (!this.group) return;
+
       const group = {
-        _id: this.$store.getters['groups/groups'].length,
+        _id: generateId({ length: 22 }),
         name: this.group,
         members: [...this.members]
-      }
+      };
 
-      this.$store.dispatch('groups/addGroup', group);
+      this.$store.dispatch("groups/addGroup", group);
 
-      const url = this.$store.getters['http/url'];
-      const token = localStorage.getItem('token');
+      const url = this.$store.getters["http/url"];
+      const token = localStorage.getItem("token");
 
-      axios.post(`${url}/logic/add_group`, {
-        group
-      }, {
-        headers: {
-          token
-        }
-      }).then(response => {
-        console.log(response);
-      });
+      axios
+        .post(
+          `${url}/logic/add_group`,
+          {
+            group
+          },
+          {
+            headers: {
+              token
+            }
+          }
+        )
+        .then(response => {
+          console.log(response);
+        });
 
       this.members = [];
-      this.name = '';
-      this.group = '';
+      this.name = "";
+      this.group = "";
       this.dialog = false;
     }
   }

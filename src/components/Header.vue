@@ -7,32 +7,54 @@
       color="primary"
       dark
     >
-      <v-app-bar-nav-icon
-        @click="
-          $store.dispatch('ui/showSidebar', !$store.getters['ui/sidebar'])
-        "
-      >
-      </v-app-bar-nav-icon>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <v-app-bar-nav-icon
+            v-on="on"
+            @click="$store.dispatch('ui/showSidebar', !$store.getters['ui/sidebar'])"
+          ></v-app-bar-nav-icon>
+        </template>
+        <span>Ihre Gruppen</span>
+      </v-tooltip>
+
       <v-sheet color="transparent">
         <v-toolbar-title class="ml-0 px-4">
           <span class="hidden-sm-and-down">{{ $vuetify.lang.t('$vuetify.name') }}</span>
         </v-toolbar-title>
       </v-sheet>
 
-      <v-tabs class="fill-height" v-model="tab" dark>
+      <v-tabs hide-slider class="fill-height" v-model="tab" dark>
         <v-tabs-slider></v-tabs-slider>
-        <v-tab>
-          {{ $vuetify.lang.t('$vuetify.tabs[0]') }}
-          <v-icon class="ml-2">mdi-account-box</v-icon>
-        </v-tab>
-        <v-tab>
-          {{ $vuetify.lang.t('$vuetify.tabs[1]') }}
-          <v-icon class="ml-2">mdi-calendar</v-icon>
-        </v-tab>
-        <v-tab @click="$store.dispatch('training/start')">
-          {{ $vuetify.lang.t('$vuetify.tabs[2]') }}
-          <v-icon class="ml-2">mdi-help-circle</v-icon>
-        </v-tab>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-tab v-on="on">
+              {{ $vuetify.lang.t('$vuetify.tabs[0]') }}
+              <v-icon class="ml-2">mdi-calendar</v-icon>
+            </v-tab>
+          </template>
+          <span>Hier tragen Sie die Fehlzeiten ein</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-tab v-on="on">
+              {{ $vuetify.lang.t('$vuetify.tabs[1]') }}
+              <v-icon class="ml-2">mdi-account-box</v-icon>
+            </v-tab>
+          </template>
+          <span>Gesammelte Daten</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on }">
+            <v-tab v-on="on">
+              {{ $vuetify.lang.t('$vuetify.tabs[2]') }}
+              <v-icon class="ml-2">mdi-help-circle</v-icon>
+            </v-tab>
+          </template>
+          <span>Hier werden Ihre Fragen beantwortet</span>
+        </v-tooltip>
       </v-tabs>
 
       <v-spacer></v-spacer>
@@ -53,9 +75,6 @@
           </v-list-item>
         </v-list>
       </v-menu>
-      <v-btn icon>
-        <v-icon>mdi-fullscreen</v-icon>
-      </v-btn>
       <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
         <v-icon>mdi-invert-colors</v-icon>
       </v-btn>

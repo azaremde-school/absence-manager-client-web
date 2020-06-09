@@ -1,6 +1,10 @@
 export default {
   name: 'Absence Manager',
-  tabs: ['Overview', 'Calendar', 'Help'],
+  tabs: [
+    'Calendar',
+    'Overview',
+    'Help'
+  ],
 
   months: [
     'January',

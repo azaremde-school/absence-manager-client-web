@@ -1,53 +1,65 @@
 <template>
-  <v-card class="mx-4" elevation="0">
-    <v-card-title>{{ name }}</v-card-title>
-    <v-divider></v-divider>
-    <div class="d-flex mb-5 py-5 my-row align-center">
-      <v-card outlined class="mt-5 mr-2">
-        <v-card-text>
-          <h3 class="my-5">Fehlstunden: {{ lessonsAbsence }}</h3>
-          <h3 class="my-5">davon entschuldigt: {{ lessonsExcused }}</h3>
-          <h3 class="my-5">davon unentschuldigt: {{ lessonsUnexcused }}</h3>
-        </v-card-text>
-      </v-card>
-      <v-card elevation="0" max-width="1000" class="py-5 flex-grow-1">
-        <v-sparkline
-          :value="lessonReasons"
-          padding="24"
-          label-size="5"
-          radius="0"
-          :gradient="['#1976D2']"
-          type="bar"
-          stroke-linecap="round"
-        >
-          <template v-slot:label="item">{{ getReason(item.index) }}, {{ item.value }}</template>
-        </v-sparkline>
-      </v-card>
-    </div>
-    <v-divider></v-divider>
-    <div class="d-flex mb-5 py-5 my-row align-center">
-      <v-card outlined class="mt-5 mr-2">
-        <v-card-text>
-          <h3 class="my-5">Fehltage: {{ daysAbsence }}</h3>
-          <h3 class="my-5">davon entschuldigt: {{ daysExcused }}</h3>
-          <h3 class="my-5">davon unentschuldigt: {{ daysUnexcused }}</h3>
-        </v-card-text>
-      </v-card>
-      <v-card elevation="0" max-width="1000" class="py-5 flex-grow-1">
-        <v-sparkline
-          :value="dayReasons"
-          padding="24"
-          label-size="5"
-          radius="0"
-          :gradient="['#1976D2']"
-          type="bar"
-          stroke-linecap="round"
-        >
-          <template v-slot:label="item">{{ getReason(item.index) }}, {{ item.value }}</template>
-        </v-sparkline>
-      </v-card>
-    </div>
-  </v-card>
+  <div>
+    <v-card 
+      v-if="
+        !$store.getters['groups/noGroups']
+        &&
+        !$store.getters['groups/noGroupSelected']
+        &&
+        !$store.getters['groups/noMemberSelected']
+      "
+      class="mx-4"
+      elevation="0"
+    >
+      <v-card-title>{{ name }}</v-card-title>
+      <v-divider></v-divider>
+      <div class="d-flex mb-5 py-5 my-row align-center">
+        <v-card outlined class="mt-5 mr-2">
+          <v-card-text>
+            <h3 class="my-5">Fehlstunden: {{ lessonsAbsence }}</h3>
+            <h3 class="my-5">davon entschuldigt: {{ lessonsExcused }}</h3>
+            <h3 class="my-5">davon unentschuldigt: {{ lessonsUnexcused }}</h3>
+          </v-card-text>
+        </v-card>
+        <v-card elevation="0" max-width="1000" class="py-5 flex-grow-1">
+          <v-sparkline
+            :value="lessonReasons"
+            padding="24"
+            label-size="5"
+            radius="0"
+            :gradient="['#1976D2']"
+            type="bar"
+            stroke-linecap="round"
+          >
+            <template v-slot:label="item">{{ getReason(item.index) }}, {{ item.value }}</template>
+          </v-sparkline>
+        </v-card>
+      </div>
+      <v-divider></v-divider>
+      <div class="d-flex mb-5 py-5 my-row align-center">
+        <v-card outlined class="mt-5 mr-2">
+          <v-card-text>
+            <h3 class="my-5">Fehltage: {{ daysAbsence }}</h3>
+            <h3 class="my-5">davon entschuldigt: {{ daysExcused }}</h3>
+            <h3 class="my-5">davon unentschuldigt: {{ daysUnexcused }}</h3>
+          </v-card-text>
+        </v-card>
+        <v-card elevation="0" max-width="1000" class="py-5 flex-grow-1">
+          <v-sparkline
+            :value="dayReasons"
+            padding="24"
+            label-size="5"
+            radius="0"
+            :gradient="['#1976D2']"
+            type="bar"
+            stroke-linecap="round"
+          >
+            <template v-slot:label="item">{{ getReason(item.index) }}, {{ item.value }}</template>
+          </v-sparkline>
+        </v-card>
+      </div>
+    </v-card>
+  </div>
 </template>
 
 <script>

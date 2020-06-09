@@ -1,6 +1,10 @@
 export default {
   name: 'Abwesenheitsmanager',
-  tabs: ['Überblick', 'Kalendar', 'Hilfe'],
+  tabs: [
+    'Kalendar',
+    'Überblick',
+    'Hilfe'
+  ],
 
   months: [
     'Januar',
@@ -23,14 +27,14 @@ export default {
 
   excused: 'attestiert',
   unexcused: 'unattestiert',
-  
+
   addGroupDialog: {
     title: 'Gruppe erstellen',
     name: 'Name',
     newMember: 'Neuer Mitglied',
     addedMembers: 'Hinzugefügte Mitglieder',
     empty: 'Die Liste ist leer.',
-    info: 'Weitere Mitglieder können auch nachher hinzugefügt werden.'
+    info: 'Weitere Mitglieder können auch nachher hinzugefügt werden.',
   },
 
   absences: {
@@ -40,8 +44,8 @@ export default {
     conference: 'Konferenz',
     private: 'Privat',
     family: 'familiäre Gründe',
-    other: 'sonstiges'
+    other: 'sonstiges',
   },
 
-  more: 'noch'
+  more: 'noch',
 };

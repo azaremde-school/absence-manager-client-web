@@ -33,9 +33,9 @@ export default {
         .then(response => {
           const groups = response.data;
 
-          if (groups.length) {
-            vm.$store.dispatch('groups/reset');
+          vm.$store.dispatch('groups/reset');
     
+          if (groups.length) {
             for (var i = 0; i < groups.length; i++) {
               vm.$store.dispatch('groups/addGroup', groups[i]);
             }

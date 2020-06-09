@@ -3,10 +3,10 @@
     <v-content class="fill-height main-tabs">
       <v-tabs v-model="tab">
         <v-tab-item>
-          <Overview />
+          <Calendar />
         </v-tab-item>
         <v-tab-item>
-          <Calendar />
+          <Overview />
         </v-tab-item>
         <v-tab-item>
           <Help />
@@ -17,10 +17,6 @@
 </template>
 
 <script>
-import Overview from "@/components/activities/overview/Overview.vue";
-import Calendar from "@/components/activities/calendar/Calendar.vue";
-import Help from "@/components/activities/help/Help.vue";
-
 export default {
   computed: {
     tab: {
@@ -30,9 +26,9 @@ export default {
     }
   },
   components: {
-    Overview,
-    Calendar,
-    Help
+    Overview: () => import('@/components/activities/overview/Overview.vue'),
+    Calendar: () => import('@/components/activities/calendar/Calendar.vue'),
+    Help: () => import('@/components/activities/help/Help.vue'),
   }
 };
 </script>
