@@ -1,7 +1,7 @@
 <template>
   <v-card elevation="0" max-height="90vh" class="scroll my-scroll mx-4 mt-4">
   <v-expansion-panels>
-    <v-expansion-panel>
+    <v-expansion-panel @click="click">
       <v-expansion-panel-header>Wie kann ich eine Klasse erstellen?</v-expansion-panel-header>
       <v-expansion-panel-content>
           <v-stepper v-model="e1">
@@ -50,7 +50,7 @@
           </v-stepper>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <v-expansion-panel>
+    <v-expansion-panel @click="click">
       <v-expansion-panel-header>Wie kann ich die Fehlzeiten eintragen?</v-expansion-panel-header>
       <v-expansion-panel-content>
           <v-stepper v-model="e1">
@@ -112,7 +112,7 @@
           </v-stepper>
       </v-expansion-panel-content>
     </v-expansion-panel>
-    <v-expansion-panel>
+    <v-expansion-panel @click="click">
       <v-expansion-panel-header>Wo finde ich die von mir erstellten Klassen / Gruppen?</v-expansion-panel-header>
       <v-expansion-panel-content>        
         <v-card outlined class="mb-12">
@@ -133,6 +133,11 @@ export default {
     return {
       e1: 1
     };
+  },
+  methods: {
+    click() {
+      this.e1 = 1;
+    }
   }
 };
 </script>
